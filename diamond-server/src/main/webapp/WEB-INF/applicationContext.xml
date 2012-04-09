@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	default-autowire="byName">
+
+    <aop:aspectj-autoproxy />
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:/jdbc.properties</value>
+				<value>classpath:/redis.properties</value>
+				<value>classpath:/pushit.properties</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="${db.url}">
+		</property>
+		<property name="username" value="${db.user}"></property>
+		<property name="password" value="${db.password}"></property>
+		<!-- 连接信息 -->
+		<property name="initialSize" value="${db.initialSize}" />
+		<property name="maxActive" value="${db.maxActive}" />
+		<property name="maxIdle" value="${db.maxIdle}" />
+		<property name="maxWait" value="${db.maxWait}" />
+		<property name="poolPreparedStatements" value="${db.poolPreparedStatements}" />
+	</bean>
+
+	<bean id="servletContext"
+		class="org.springframework.web.context.support.ServletContextFactoryBean" />
+
+	<bean id="validationService" class="com.taobao.diamond.server.service.ValidationService">
+	</bean>
+
+
+	<bean id="persistService" class="com.taobao.diamond.server.service.DefaultPersistService">
+
+	</bean>
+	<bean id="notifyService" class="com.taobao.diamond.server.service.NotifyService"
+		init-method="loadNodes">
+	</bean>
+	<bean id="diskService" class="com.taobao.diamond.server.service.DiskService">
+	</bean>
+
+	<bean id="groupService" class="com.taobao.diamond.server.service.GroupService">
+	</bean>
+
+	<bean id="adminService" class="com.taobao.diamond.server.service.AdminService">
+	</bean>
+
+	<bean id="updateTaskManager0" class="com.taobao.diamond.notify.utils.task.TaskManager"
+		init-method="init" scope="prototype">
+		<constructor-arg index="0" value="update task manager 0" />
+	</bean>
+
+	<bean id="updateTaskManager1" class="com.taobao.diamond.notify.utils.task.TaskManager"
+		init-method="init" scope="prototype">
+		<constructor-arg index="0" value="update task manager 1" />
+	</bean>
+
+	<bean id="updateTaskManager2" class="com.taobao.diamond.notify.utils.task.TaskManager"
+		init-method="init" scope="prototype">
+		<constructor-arg index="0" value="update task manager 2" />
+	</bean>
+
+	<bean id="updateTaskManager3" class="com.taobao.diamond.notify.utils.task.TaskManager"
+		init-method="init" scope="prototype">
+		<constructor-arg index="0" value="update task manager 3" />
+	</bean>
+
+	<bean id="updateAllTaskManager" class="com.taobao.diamond.notify.utils.task.TaskManager"
+		init-method="init" scope="prototype">
+		<constructor-arg index="0" value="update-all task manager" />
+	</bean>
+
+	<bean id="removeTaskManager" class="com.taobao.diamond.notify.utils.task.TaskManager"
+		init-method="init" scope="prototype">
+		<constructor-arg index="0" value="remove task manager" />
+	</bean>
+
+	<bean id="notifyTaskManager" class="com.taobao.diamond.notify.utils.task.TaskManager"
+		init-method="init" scope="prototype">
+		<constructor-arg index="0" value="notify task manager" />
+	</bean>
+
+	<bean id="pushitTaskManager" class="com.taobao.diamond.notify.utils.task.TaskManager"
+		init-method="init" scope="prototype">
+		<constructor-arg index="0" value="pushit task manager" />
+	</bean>
+
+	<bean id="redisTaskManager" class="com.taobao.diamond.notify.utils.task.TaskManager"
+		init-method="init" scope="prototype">
+		<constructor-arg index="0" value="redis task manager" />
+	</bean>
+
+	<bean id="taskManagerService" class="com.taobao.diamond.server.service.TaskManagerService">
+		<property name="updateTaskManagers">
+			<list>
+				<ref bean="updateTaskManager0" />
+				<ref bean="updateTaskManager1" />
+				<ref bean="updateTaskManager2" />
+				<ref bean="updateTaskManager3" />
+			</list>
+		</property>
+		<property name="updateAllTaskManager" ref="updateAllTaskManager" />
+		<property name="removeTaskManager" ref="removeTaskManager" />
+		<property name="notifyTaskManager" ref="notifyTaskManager" />
+		<property name="pushitTaskManager" ref="pushitTaskManager" />
+		<property name="redisTaskManager" ref="redisTaskManager" />
+	</bean>
+
+	<bean id="notifyTaskProcessor"
+		class="com.taobao.diamond.server.service.task.processor.NotifyTaskProcessor">
+		<property name="notifyService" ref="notifyService" />
+	</bean>
+
+	<bean id="configService" class="com.taobao.diamond.server.service.ConfigService">
+	</bean>
+
+	<bean id="redisService" class="com.taobao.diamond.server.service.RedisService">
+		<constructor-arg index="0" value="${server.ip}" />
+		<constructor-arg index="1" value="${server.port}" />
+	</bean>
+
+	<bean id="pushitService" class="com.taobao.diamond.server.service.PushitService"
+		init-method="init" destroy-method="destroy">
+		<property name="pushitServers" value="${servers}" />
+	</bean>
+
+	<bean id="aCLService" class="com.taobao.diamond.server.service.ACLService">
+	</bean>
+
+	<bean id="flowControlService" class="com.taobao.diamond.server.service.FlowControlService">
+		<property name="threshold" value="10000" />
+	</bean>
+
+	<bean id="aggregationService" class="com.taobao.diamond.server.service.AggregationService">
+	</bean>
+
+	<bean id="realTimeNotifyTaskProcessor"
+		class="com.taobao.diamond.server.service.task.processor.RealTimeNotifyTaskProcessor">
+		<property name="pushitService" ref="pushitService" />
+	</bean>
+
+
+	<bean id="updateConfigInfoTaskProcessor"
+		class="com.taobao.diamond.server.service.task.processor.UpdateConfigInfoTaskProcessor"
+		init-method="init">
+		<property name="configService" ref="configService" />
+		<property name="aggrService" ref="aggregationService" />
+		<property name="taskManagerService" ref="taskManagerService" />
+		<property name="realTimeNotifyTaskProcessor" ref="realTimeNotifyTaskProcessor" />
+	</bean>
+
+	<bean id="removeConfigInfoTaskProcessor"
+		class="com.taobao.diamond.server.service.task.processor.RemoveConfigInfoTaskProcessor">
+		<property name="configService" ref="configService" />
+		<property name="aggrService" ref="aggregationService" />
+		<property name="taskManagerService" ref="taskManagerService" />
+		<property name="realTimeNotifyTaskProcessor" ref="realTimeNotifyTaskProcessor" />
+	</bean>
+
+	<bean id="updateAllConfigInfoTaskProcessor"
+		class="com.taobao.diamond.server.service.task.processor.UpdateAllConfigInfoTaskProcessor">
+		<property name="configService" ref="configService" />
+		<property name="aggrService" ref="aggregationService" />
+		<property name="taskManagerService" ref="taskManagerService" />
+		<property name="realTimeNotifyTaskProcessor" ref="realTimeNotifyTaskProcessor" />
+	</bean>
+
+
+
+	<bean id="redisTaskProcessor"
+		class="com.taobao.diamond.server.service.task.processor.RedisTaskProcessor">
+		<property name="redisService" ref="redisService" />
+	</bean>
+
+
+	<bean id="timerTaskService" class="com.taobao.diamond.server.service.TimerTaskService"
+		init-method="init" destroy-method="despose">
+	</bean>
+
+
+	<bean id="dataIdCountService"
+		class="com.taobao.diamond.server.service.jmx.DataIdCountService"
+		init-method="init">
+		<property name="configService" ref="configService" />
+	</bean>
+
+
+	<bean id="aclControlInterceptor"
+		class="com.taobao.diamond.server.interceptor.ACLControlInterceptor" />
+
+	<bean id="flowControlInterceptor"
+		class="com.taobao.diamond.server.interceptor.FlowControlInterceptor" />
+
+	<bean id="annotationMapper"
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="order">
+			<value>1</value>
+		</property>
+		<property name="interceptors">
+			<list>
+				<ref bean="aclControlInterceptor" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="publicMapper"
+		class="com.taobao.diamond.server.interceptor.SelectedAnnotationHandlerMapping">
+		<property name="order">
+			<value>0</value>
+		</property>
+
+		<property name="urls">
+			<list>
+				<value>/admin.do</value>
+				<value>/basestone.do</value>
+			</list>
+		</property>
+		<property name="interceptors">
+			<list>
+				<ref bean="flowControlInterceptor" />
+			</list>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+	<context:component-scan base-package="com.taobao.diamond.server.controller,com.taobao.diamond.server.aop" />
+
+</beans>

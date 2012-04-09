@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="GBK" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+	<sqlMap namespace="diamond">
+		<!--=============== ResultMap================== -->
+		<resultMap class="com.taobao.diamond.domain.ConfigInfo" id="RSULT_MAP_DIAMOND_DATA">
+			<result property="dataId" column="data_id" />
+			<result property="group" column="group_id" />
+			<result property="content" column="content" />
+		</resultMap>
+		<!-- ================精确查询==================== -->
+		<select id="queryDiamondDataByDataIdAndGroupName" resultMap="RSULT_MAP_DIAMOND_DATA" parameterClass="java.util.Map">
+			SELECT data_id,group_id,content
+			FROM config_info
+			WHERE data_id=#dataId# AND group_id=#groupName#
+		</select>
+		<!-- ================得到分页总记录数==================== -->
+		<select id="queryCountByDataIdPatternAndGroupNamePatternAndContentPattern" resultClass="java.lang.Long" parameterClass="java.util.Map">
+	         SELECT COUNT(*)
+	         FROM
+	         config_info
+	         <dynamic prepend="where">
+	            <isNotNull property="dataIdLikeStr" prepend="AND">
+	              data_id like #dataIdLikeStr#
+	            </isNotNull>
+	            <isNotNull property="dataId" prepend="AND">
+	              data_id = #dataId#
+	            </isNotNull>
+	            <isNotNull property="groupIdLikeStr" prepend="AND">
+	               group_id like #groupIdLikeStr#
+	            </isNotNull>
+	            <isNotNull property="groupId" prepend="AND">
+	               group_id = #groupId#
+	            </isNotNull>
+	            <isNotNull property="contentLikeStr" prepend="AND">
+	               content like #contentLikeStr#
+	            </isNotNull>
+	            <isNotNull property="content" prepend="AND">
+	               content = #content#
+	            </isNotNull>
+	         </dynamic>
+	     </select>
+      	 <!-- ================得到指定页的记录==================== --> 
+	     <select id="queryDataByDataIdPatternAndGroupNamePatternAndContentPattern" resultMap="RSULT_MAP_DIAMOND_DATA" parameterClass="java.util.Map">
+	         SELECT data_id,
+	         group_id,
+	         content
+	         FROM
+	         config_info
+	         <dynamic prepend="where">
+	            <isNotNull property="dataIdLikeStr" prepend="AND">
+	              data_id like #dataIdLikeStr#
+	            </isNotNull>
+	            <isNotNull property="dataId" prepend="AND">
+	              data_id = #dataId#
+	            </isNotNull>
+	            <isNotNull property="groupIdLikeStr" prepend="AND">
+	               group_id like #groupIdLikeStr#
+	            </isNotNull>
+	            <isNotNull property="groupId" prepend="AND">
+	               group_id = #groupId#
+	            </isNotNull>
+	            <isNotNull property="contentLikeStr" prepend="AND">
+	               content like #contentLikeStr#
+	            </isNotNull>
+	            <isNotNull property="content" prepend="AND">
+	               content = #content#
+	            </isNotNull>
+	         </dynamic>
+	         LIMIT #offset#,#length#
+	     </select>
+	</sqlMap>
