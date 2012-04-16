@@ -9,7 +9,7 @@
 	<version>1.0.1.taocode-SNAPSHOT</version>
 
 	<build>
-		<finalName>pushit</finalName>
+		
 		<plugins>
 			<plugin>
 				<groupId>com.atlassian.maven.plugins</groupId>
@@ -36,6 +36,14 @@
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<encoding>GBK</encoding>
 				</configuration>
 			</plugin>
 
@@ -126,5 +134,18 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
+    <distributionManagement>
+        <repository>
+             <id>taocodeReleases</id>
+			 <name>taocode nexus</name>
+             <url>http://mvnrepo.code.taobao.org/nexus/content/repositories/releases/</url> 
+        </repository>
+        <snapshotRepository>
+              <id>taocodeSnapshots</id>
+			  <name>taocode nexus</name>
+              <url>http://mvnrepo.code.taobao.org/nexus/content/repositories/snapshots/</url>
+         </snapshotRepository>
+	</distributionManagement>
 
 </project>

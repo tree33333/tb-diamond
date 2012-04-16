@@ -73,6 +73,14 @@
 					<tagBase>http://www.xx.com/repos/diamond/tags</tagBase>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<encoding>GBK</encoding>
+				</configuration>
+			</plugin>
 
 		</plugins>
 
@@ -238,7 +246,7 @@
 			<dependency>
 				<groupId>com.taobao.pushit</groupId>
 				<artifactId>pushit</artifactId>
-				<version>1.0.0</version>
+				<version>1.0.1.taocode-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>redis.clients</groupId>
@@ -315,5 +323,18 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
+	<distributionManagement>
+        <repository>
+             <id>taocodeReleases</id>
+			 <name>taocode nexus</name>
+             <url>http://mvnrepo.code.taobao.org/nexus/content/repositories/releases/</url> 
+        </repository>
+        <snapshotRepository>
+              <id>taocodeSnapshots</id>
+			  <name>taocode nexus</name>
+              <url>http://mvnrepo.code.taobao.org/nexus/content/repositories/snapshots/</url>
+         </snapshotRepository>
+	</distributionManagement>
 
 </project>
